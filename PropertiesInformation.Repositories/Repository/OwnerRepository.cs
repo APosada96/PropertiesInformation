@@ -5,11 +5,6 @@ using PropertiesInformation.Domain.Entities;
 using PropertiesInformation.Domain.Interfaces.Owner;
 using PropertiesInformation.Domain.Interfaces.Storage;
 using PropertiesInformation.Infrastructure.DBContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PropertiesInformation.Repositories.Repository
 {

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PropertiesInformation.Domain\PropertiesInformation.Domain.csproj" />
     <ProjectReference Include="..\PropertiesInformation.Entities\PropertiesInformation.Domain.csproj" />
   </ItemGroup>
 

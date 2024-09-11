@@ -79,5 +79,23 @@ namespace PropertiesInformation.Api.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPut("ChangePrice")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Price([FromBody] ChangePriceDto changePriceDto)
+        {
+            try
+            {
+              
+                return Ok(await _propertyRepository.ChangePrice(changePriceDto));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

@@ -13,5 +13,7 @@ namespace PropertiesInformation.Domain.Interfaces.Properties
         Task<int> AddProperty(PropertyDto propertyDto);
 
         Task<int> UpdateProperty(PropertyUpdateDto propertyDto);
+
+        Task<int> ChangePrice(ChangePriceDto changePriceDto);
     }
 }

@@ -26,6 +26,9 @@ namespace PropertiesInformation.Api.Controllers
 
       
         [HttpPost("AddFile")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PostPropertyImage(PropertyImageDto propertyImageDto)
         {
             try

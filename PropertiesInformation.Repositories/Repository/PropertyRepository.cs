@@ -79,5 +79,24 @@ namespace PropertiesInformation.Repositories.Repository
                 throw;
             }
         }
+
+        public async Task<int> ChangePrice(ChangePriceDto changePriceDto)
+        {
+            try
+            {
+                var property = await _context.Properties.FirstOrDefaultAsync(x => x.IdProperty == changePriceDto.IdProperty);
+                if (property is null) throw new ArgumentNullException($"The property {changePriceDto.IdProperty} not exist.");
+
+                property.Price = changePriceDto.Price;
+                await _context.SaveChangesAsync();
+                return property.IdProperty;
+            }
+            catch (ArgumentNullException)
+            {
+
+                throw;
+            }
+          
+        }
     }
 }

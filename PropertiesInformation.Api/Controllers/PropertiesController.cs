@@ -22,12 +22,12 @@ namespace PropertiesInformation.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PropertyDto propertyDto)
         {
             try
             {
 
-                return Ok(await _propertyRepository.Get());
+                return Ok(await _propertyRepository.Get(propertyDto));
             }
             catch (Exception ex)
             {

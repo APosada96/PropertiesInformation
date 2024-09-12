@@ -4,11 +4,7 @@ using PropertiesInformation.Domain.Dtos;
 using PropertiesInformation.Domain.Entities;
 using PropertiesInformation.Domain.Interfaces.Properties;
 using PropertiesInformation.Infrastructure.DBContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace PropertiesInformation.Repositories.Repository
 {
@@ -23,13 +19,31 @@ namespace PropertiesInformation.Repositories.Repository
             this._mapper = mapper;
         }
 
-        public async Task<List<PropertyListDto>> Get()
+        public async Task<List<PropertyListDto>> Get(PropertyDto propertyDto)
         {
-            var properties =await _context.Properties.Include(x => x.PropertyTraces).
-                                                      Include(x => x.PropertyImages)
-                                                      .AsNoTracking()
-                                                      .OrderBy(x => x.Name).AsSingleQuery().ToListAsync();
-            return  _mapper.Map<List<PropertyListDto>>(properties);
+            if (await ValidateProperties(propertyDto) == 0)
+            {
+                var queryAll =await _context.Properties
+                           .Include(c => c.PropertyImages)
+                           .Include(c => c.PropertyTraces)
+                           .ToListAsync();
+
+                return _mapper.Map<List<PropertyListDto>>(queryAll);
+            }
+
+            var query = _context.Properties
+            .Include(c => c.PropertyImages)
+            .Include(c => c.PropertyTraces)
+            .Where(t => ((propertyDto.Name != null || !string.IsNullOrEmpty(propertyDto.Name)) && t.Name.Contains(propertyDto.Name))
+                     || ((propertyDto.Address != null || !string.IsNullOrEmpty(propertyDto.Address)) && t.Address.Contains(propertyDto.Address))
+                     || ((propertyDto.Price != null || propertyDto.Price != 0) && t.Price == propertyDto.Price)
+                     || ((propertyDto.Code != null || !string.IsNullOrEmpty(propertyDto.Code)) && t.Code.Contains(propertyDto.Code))
+                     || ((propertyDto.Year != null || propertyDto.Year != 0) && t.Year == propertyDto.Year)
+                     || ((propertyDto.IdOwner != null || propertyDto.IdOwner != 0) && t.IdOwner == propertyDto.IdOwner));
+
+            var result = query.ToList();
+
+            return  _mapper.Map<List<PropertyListDto>>(result);
         }
 
         public async Task<int> AddProperty(PropertyDto propertyDto)
@@ -97,6 +111,37 @@ namespace PropertiesInformation.Repositories.Repository
                 throw;
             }
           
+        }
+
+        private async Task<int> ValidateProperties(PropertyDto propertyDto)
+        {
+            int count = 0;
+            if (propertyDto == null) return await Task.FromResult(0);
+
+            var properties = propertyDto.GetType().GetProperties(); 
+
+            foreach (var property in properties)
+            { 
+                var value = property.GetValue(propertyDto);
+                if (value == null) continue;
+
+                if (property.PropertyType == typeof(double) || property.PropertyType == typeof(int))
+                {
+                    if (Convert.ToInt16(value) != 0)
+                    {
+                        count++;
+                        break;
+                    }
+                    continue;
+                }
+                if (value != null || !string.IsNullOrEmpty(value.ToString()))
+                { 
+                    count++;
+                    break;
+                }
+            }
+
+            return await Task.FromResult(count);
         }
     }
 }

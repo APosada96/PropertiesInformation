@@ -13,10 +13,10 @@ namespace PropertiesInformation.ApiTests
         [Fact]
         public async void GetTest()
         {
-          
+            var property = new PropertyDto { IdOwner = 1, Name = "Test" };
             var propertiesController = new PropertiesController(_propertyRepositoryMock.Object);
 
-            IActionResult result = await propertiesController.Get();
+            IActionResult result = await propertiesController.Get(property);
             OkObjectResult okResult = result as OkObjectResult;
 
             Assert.NotNull(okResult);
@@ -55,7 +55,7 @@ namespace PropertiesInformation.ApiTests
         {
             var model = new PropertyDto { Name = "Test", Address = "Cra 43 #", Code = "1232134" };
             var propertiesController = new PropertiesController(_propertyRepositoryMock.Object);
-            _propertyRepositoryMock.Setup(repo => repo.Get()).ReturnsAsync(GetList);
+            _propertyRepositoryMock.Setup(repo => repo.Get(model)).ReturnsAsync(GetList);
 
 
             var result = await propertiesController.Post(model);
